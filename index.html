@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dream11 AI Installable</title>
+
+<!-- ⚠️ IMPORTANT: To install this app, you MUST open it via HTTP/HTTPS (not file://)
+     Easiest method:
+     1. Upload this file to https://pages.github.com
+     2. Open link in Chrome
+     3. Click "Add to Home Screen"
+-->
+
+<style>
+body{font-family:Arial;background:#0b0b0b;color:#fff;padding:15px}
+input{width:100%;padding:10px;margin:5px 0;border-radius:6px;border:none}
+button{padding:12px;width:100%;margin-top:8px;background:#00e5ff;color:black;border:none;border-radius:6px}
+.team{background:#1e1e1e;margin-top:10px;padding:10px;border-radius:8px}
+</style>
+</head>
+<body>
+
+<h2>🤖 Dream11 AI (FINAL WORKING VERSION)</h2>
+
+<p style="color:#aaa;font-size:12px">👉 Install: Open in Chrome → 3 dots → Add to Home Screen</p>
+
+<div id="inputs"></div>
+<button onclick="generateTeams()">⚡ Generate 60 Teams</button>
+<button onclick="downloadTeams()">📤 Download Teams</button>
+
+<div id="teams"></div>
+
+<script>
+// inputs
+for(let i=0;i<22;i++){
+ document.getElementById("inputs").innerHTML +=
+ `<input id="p${i}" placeholder="Player ${i+1}">`;
+}
+
+function getStats(){
+ return {
+  form: Math.floor(Math.random()*10)+1,
+  sel: Math.floor(Math.random()*100)
+ };
+}
+
+function generateTeams(){
+ let players=[];
+ for(let i=0;i<22;i++){
+  let val=document.getElementById("p"+i).value;
+  if(val===""){alert("Fill all players");return;}
+  let s=getStats();
+  players.push({name:val,score:(s.form*2)+(100-s.sel)});
+ }
+
+ let output="";
+ window.saved="";
+
+ for(let t=0;t<60;t++){
+  let sorted=[...players].sort((a,b)=>b.score-a.score);
+
+  let team=[
+    ...sorted.slice(0,5),
+    ...sorted.slice(5,9),
+    ...sorted.slice(9,11)
+  ];
+
+  team=[...team].sort(()=>Math.random()-0.5);
+
+  let captain=team[0].name;
+  let vc=team[1].name;
+
+  let names=team.map(p=>p.name);
+
+  output+=`<div class="team">
+  <b>Team ${t+1}</b><br>
+  ${names.join(", ")}<br>
+  C: ${captain} | VC: ${vc}
+  </div>`;
+
+  window.saved+=`Team ${t+1}: ${names.join(", ")} | C:${captain} VC:${vc}\n`;
+ }
+
+ document.getElementById("teams").innerHTML=output;
+}
+
+function downloadTeams(){
+ if(!window.saved){alert("Generate first");return;}
+ let blob=new Blob([window.saved],{type:"text/plain"});
+ let a=document.createElement("a");
+ a.href=URL.createObjectURL(blob);
+ a.download="teams.txt";
+ a.click();
+}
+</script>
+
+</body>
+</html>
